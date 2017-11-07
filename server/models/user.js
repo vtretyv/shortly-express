@@ -33,9 +33,8 @@ class Users extends Model {
    * @returns {Promise<Object>} A promise that is fulfilled with the result of
    * the record creation or rejected with the error that occured.
    */
-  create({ username, password }) {
+  create( username, password ) {
     let salt = utils.createRandom32String();
-
     let newUser = {
       username,
       salt,

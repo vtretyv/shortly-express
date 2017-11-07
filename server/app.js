@@ -74,6 +74,53 @@ app.post('/links',
     });
 });
 
+//Set up table models
+
+app.get('/login', 
+(req, res, next) => {
+//Check cookies to see if the account is already created
+  if (req.cookies) {
+  
+  }
+//If account is not created, redirect to the signup page
+//res.redirect(301, '/signup');
+});
+
+app.get('/signup', 
+(req, res, next) => {
+//Creates cookies and attach to res.set_cookies
+//Once account is created, redirect to login
+//res.redirect(301, '/login');
+});
+
+app.post('/signup', 
+(req, res, next) => {
+  // if ( req.cookies('sessionID') ) {
+  //   res.redirect(301, '/');
+  // }
+  let user = req.body.username;
+  let pass = req.body.password;
+  console.log('user :', user, '        ');
+  console.log('pass :', pass, '        ');
+  models.Users.create(user, pass).then( (err, data) => { 
+    if (err) {
+      res.redirect(301, '/signup');
+      return;
+    }
+    res.redirect(301, '/');
+  }); 
+  // models.Sessions.create().then( session => { 
+  //   console.log('session:', session); 
+  //   // res.cookie('sessionID', session.hash);
+  // });
+  // res.cookie('username', user);
+  // res.cookie('password', passHash);
+  // console.log('req.cookies :', req.cookie);
+  // console.log('res.cookies :', res.cookie);
+//Creates cookies and attach to res.set_cookies
+//Once account is created, redirect to login
+
+});
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
