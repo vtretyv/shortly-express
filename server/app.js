@@ -5,6 +5,7 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const db = require('./db');
 
 const app = express();
 
@@ -98,17 +99,23 @@ app.post('/signup',
   // if ( req.cookies('sessionID') ) {
   //   res.redirect(301, '/');
   // }
+  // console.log('res.cookies in post: ', res.cookies);
+  // console.log('req.cookies in post: ', req.cookies);
+  
   let user = req.body.username;
   let pass = req.body.password;
-  console.log('user :', user, '        ');
-  console.log('pass :', pass, '        ');
-  models.Users.create(user, pass).then( (err, data) => { 
-    if (err) {
+  models.Users.get({username: user}).then( (data) => {
+    if (data === undefined) {
+      models.Users.create(user, pass).then( () => { 
+        // req.cookies();
+        res.redirect(301, '/');
+      });
+    } else {
       res.redirect(301, '/signup');
-      return;
     }
-    res.redirect(301, '/');
-  }); 
+  });
+  
+   
   // models.Sessions.create().then( session => { 
   //   console.log('session:', session); 
   //   // res.cookie('sessionID', session.hash);
@@ -120,6 +127,28 @@ app.post('/signup',
 //Creates cookies and attach to res.set_cookies
 //Once account is created, redirect to login
 
+});
+
+app.post('/login',
+(req, res, next) => {
+  let user = req.body.username;
+  let attemptedPass = req.body.password;
+  // let attemptedPassHash = utils.createHash(attemptedPass);
+  models.Users.get({username: user}).then( (data) => {
+    if (data !== undefined) {
+      console.log('In the defined statement', data);
+      let samePass = models.Users.compare(attemptedPass, data.password, data.salt);
+      console.log('Same Pass : ', samePass);
+      if (samePass) {
+        console.log('In the same pass');
+        res.redirect(301, '/');
+      } else {
+        res.redirect(301, '/login');
+      }
+    } else {
+      res.redirect(301, '/login');
+    }
+  });
 });
 /************************************************************/
 // Write your authentication routes here
