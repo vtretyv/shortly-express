@@ -277,7 +277,7 @@ describe('', function() {
     });
   });
 
-  xdescribe('Sessions Schema:', function() {
+  describe('Sessions Schema:', function() {
     it('contains a sessions table', function(done) {
       var queryString = 'SELECT * FROM sessions';
       db.query(queryString, function(err, results) {
@@ -371,7 +371,7 @@ describe('', function() {
       });
     });
 
-    xdescribe('Session Parser', function() {
+    describe('Session Parser', function() {
       it('initializes a new session when there are no cookies on the request', function(done) {
         var requestWithoutCookies = httpMocks.createRequest();
         var response = httpMocks.createResponse();
@@ -439,15 +439,16 @@ describe('', function() {
         var requestWithoutCookie = httpMocks.createRequest();
         var response = httpMocks.createResponse();
         var username = 'BillZito';
-
+        console.log('Beginning of test');
         db.query('INSERT INTO users (username) VALUES (?)', username, function(error, results) {
-          if (error) { return done(error); }
+          if (error) {return done(error); }
           var userId = results.insertId;
-
           createSession(requestWithoutCookie, response, function() {
             var hash = requestWithoutCookie.session.hash;
+            //console.log('Hash :', hash);
+            //console.log('In the create Session');
             db.query('UPDATE sessions SET userId = ? WHERE hash = ?', [userId, hash], function(error, result) {
-
+              
               var secondResponse = httpMocks.createResponse();
               var requestWithCookies = httpMocks.createRequest();
               requestWithCookies.cookies.shortlyid = hash;

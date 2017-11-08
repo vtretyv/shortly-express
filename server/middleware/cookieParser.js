@@ -11,6 +11,10 @@ const parseCookies = (req, res, next) => {
     });
   }
   req.cookies = cookieHolder;
+  // for (var key in cookieHolder) {
+  //   res.cookie(key, cookieHolder[key]);
+  // }
+  // res.cookie(keyValue[0], keyValue[1]);
   next();
 };
 
