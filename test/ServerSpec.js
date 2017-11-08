@@ -481,7 +481,7 @@ describe('', function() {
     });
   });
 
-  xdescribe('Sessions and cookies', function() {
+  describe('Sessions and cookies', function() {
     var requestWithSession;
     var cookieJar;
 
@@ -611,7 +611,7 @@ describe('', function() {
       }
     };
 
-    xbeforeEach(function(done) {
+    beforeEach(function(done) {
       var options = {
         'method': 'POST',
         'followAllRedirects': true,

@@ -10,7 +10,7 @@ module.exports.createSession = (req, res, next) => {
   if ( _.isEmpty(req.cookies) ) {
     models.Sessions.create().then( (data) => {
       models.Sessions.get( {'id': data.insertId} ).then( (result) => {
-        console.log('result.hash line 12 :', result.hash);
+        // console.log('result.hash line 12 :', result.hash);
         res.cookie('shortlyid', result.hash);
         req.session.hash = result.hash;
         next();
@@ -30,14 +30,14 @@ module.exports.createSession = (req, res, next) => {
       if (result) {
         if (result.userId !== null) { 
           models.Users.get( {'id': result.userId} ).then( (result) => {
-            console.log('in users get id:', result);
+            // console.log('in users get id:', result);
             req.session.user = {'username': result.username };
             req.session.userId = result.id;
             next();
-            console.log('req already has cookies, req.cookies: ', req.cookies);
+            // console.log('req already has cookies, req.cookies: ', req.cookies);
           });
         } else {
-          console.log('req already has cookies, req.cookies: ', req.cookies);
+          // console.log('req already has cookies, req.cookies: ', req.cookies);
           req.session.user = {'username': null };
           req.session.userId = null;
           next();
@@ -53,22 +53,12 @@ module.exports.createSession = (req, res, next) => {
         });
       }
     });
-  
   }
-  console.log('HARD TO MISS!*!*!*!*!*!');
 };
 
 /************************************************************/
 // Add additional authentication middleware functions below
 /************************************************************/
-
-//Taken from app.post method when we thought we had to create session there
-  // models.Sessions.create().then( session => { 
-  //   console.log('session:', session); 
-  //   // res.cookie('sessionID', session.hash);
-  // });
-  // res.cookie('username', user);
-  // res.cookie('password', passHash);
-  // console.log('req.cookies :', req.cookie);
-  // console.log('res.cookies :', res.cookie);
-//Creates cookies and attach to res.set_cookies
+module.exports.createSessionOnRequest = (req, res, next) => {
+  createSession(req, res, next);
+};
